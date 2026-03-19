@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>მათემატიკის ბარათები</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    
+   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+</head>
+<body>
+
+    <h1>მათემატიკის ბარათები</h1>
+
+    <div id="menu" class="menu-container">
+        <div class="category-card" onclick="startStack('ტრიგონომეტრია')">
+            <h3>ტრიგონომეტრია</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('სამკუთხედის მსგავსება')">
+            <h3>სამკუთხედის მსგავსება</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('პითაგორას თეორემა')">
+            <h3>პითაგორას თეორემა</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('წესიერი მრავალკუთხედები')">
+            <h3>წესიერი მრავალკუთხედები</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('წრფივი ფუნქცია')">
+            <h3>წრფივი ფუნქცია</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('კვადრატული ფუნქცია')">
+            <h3>კვადრატული ფუნქცია</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('ფიგურათა ფართობები')">
+            <h3>ფიგურათა ფართობები</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('ვექტორები')">
+            <h3>ვექტორები</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('სტატისტიკა')">
+            <h3>სტატისტიკა</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('პროცენტი, ნაწილი, პროპორცია')">
+            <h3>პროცენტი, ნაწილი, პროპორცია</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('იცანი ფორმულა')">
+            <h3>იცანი ფორმულა</h3> 
+        </div>
+        <div class="category-card" onclick="startStack('გრაფიკები')">
+            <h3>გრაფიკები</h3> 
+        </div>
+        
+    </div>
+
+    <div id="player">
+        <button class="back-btn" onclick="goHome()">← მთავარი მენიუ</button>
+        <h2 id="category-title"></h2>
+        
+        <div class="flashcard" onclick="this.classList.toggle('flipped')">
+            <div class="flashcard-inner">
+                <div class="front">
+                    <div id="q-text-content"></div>
+                    <img id="q-img" alt="Diagram">
+                   <div id="jxgbox" class="jxgbox" style="width: 280px; height: 280px; margin: 10px auto; display: block; background: white;"></div>
+                </div>
+                <div class="back" id="a-text">პასუხი</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="prevCard()">წინა</button>
+            <span id="progress">1 / 1</span>
+            <button onclick="nextCard()">შემდეგი</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

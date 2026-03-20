@@ -216,18 +216,25 @@ function updateCard() {
     const card = currentStack[currentIndex];
     const textEl = document.getElementById('q-text-content');
     const aEl = document.getElementById('a-text');
-    const imgEl = document.getElementById('q-img'); // Safely handling images
+    const imgEl = document.getElementById('q-img'); 
     const graphEl = document.getElementById('jxgbox');
 
     // 1. Reset card state
     const flashcard = document.querySelector('.flashcard');
-    if (flashcard) flashcard.classList.remove('flipped');
+    if (flashcard) {
+        flashcard.classList.remove('flipped');
+        
+        // THE FIX: Assign the click behavior here
+        flashcard.onclick = toggleFlip; 
+        
+        if (graphEl) graphEl.style.visibility = "visible"; 
+    }
 
     // 2. Set Text Content
     if (textEl) textEl.innerHTML = card.q || "";
     if (aEl) aEl.innerHTML = card.a || "";
 
-    // 3. Set Image Content (Safety check so standard cards don't break)
+    // 3. Set Image Content
     if (imgEl) {
         if (card.img) {
             imgEl.src = card.img;
@@ -237,7 +244,7 @@ function updateCard() {
         }
     }
 
-   // 4. GRAPH LOGIC
+    // 4. GRAPH LOGIC
     if (graphEl) {
         if (board) {
             JXG.JSXGraph.freeBoard(board);
@@ -246,8 +253,7 @@ function updateCard() {
 
         if (card.func && card.func.trim() !== "") {
             graphEl.style.display = "block";
-            
-            // THE FIX: This stops the graph from "stealing" your click!
+            graphEl.style.visibility = "visible"; // Force visibility for new graph
             graphEl.style.pointerEvents = "none"; 
             
             setTimeout(() => {
@@ -264,12 +270,13 @@ function updateCard() {
         progressEl.innerText = `${currentIndex + 1} / ${currentStack.length}`;
     }
     
-    // Math rendering configuration
+    // Math rendering configuration (Includes $ for standard and \( \) for your ledger preference)
     if (typeof window.renderMathInElement === 'function') {
         renderMathInElement(document.getElementById('player'), {
             delimiters: [
-                {left: '$', right: '$', display: true},
-                {left: '\\(', right: '\\)', display: false} 
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '$$', right: '$$', display: true}
             ],
             throwOnError: false
         });
@@ -331,4 +338,25 @@ function goHome() {
     }
     document.getElementById('menu').style.display = 'grid';
     document.getElementById('player').style.display = 'none';
+} 
+function toggleFlip() {
+    const flashcard = document.querySelector('.flashcard');
+    const graphEl = document.getElementById('jxgbox');
+    
+    if (!flashcard) return;
+
+    // Toggle the flipped class
+    flashcard.classList.toggle('flipped');
+
+    // iPAD FIX: Hide the graph when the card is showing the back (answer)
+    if (graphEl) {
+        if (flashcard.classList.contains('flipped')) {
+            graphEl.style.visibility = "hidden";
+        } else {
+            // Show it again when flipped to the front (question)
+            if (currentStack[currentIndex] && currentStack[currentIndex].func) {
+                graphEl.style.visibility = "visible";
+            }
+        }
+    }
 }

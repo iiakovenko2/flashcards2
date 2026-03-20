@@ -10,11 +10,11 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
     
    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
-   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
-   <link rel="stylesheet" href="style.css">
-</head>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <link rel="stylesheet" href="style.css">
+    </head>
 <body>
-
+      
     <h1>მათემატიკის ბარათები</h1>
 
     <div id="menu" class="menu-container">
@@ -61,16 +61,15 @@
         <button class="back-btn" onclick="goHome()">← მთავარი მენიუ</button>
         <h2 id="category-title"></h2>
         
-        <div class="flashcard" onclick="this.classList.toggle('flipped')">
-            <div class="flashcard-inner">
-                <div class="front">
-                    <div id="q-text-content"></div>
-                    <img id="q-img" alt="Diagram">
-                   <div id="jxgbox" class="jxgbox" style="width: 280px; height: 280px; margin: 10px auto; display: block; background: white;"></div>
-                </div>
-                <div class="back" id="a-text">პასუხი</div>
-            </div>
+        <div class="flashcard"> <div class="flashcard-inner">
+        <div class="front">
+            <div id="q-text-content"></div>
+            <img id="q-img" alt="Diagram">
+            <div id="jxgbox" class="jxgbox" style="width: 280px; height: 280px; margin: 10px auto; display: block; background: white;"></div>
         </div>
+        <div class="back" id="a-text">პასუხი</div>
+    </div>
+</div>
 
         <div class="controls">
             <button onclick="prevCard()">წინა</button>

@@ -26,7 +26,12 @@ const data = {
       { q : "ტოლფერდა მართკუთხა სამკუთხედის ჰიპოტენუზისა და კათეტის შეფარდებაა  ", a: "$\\sqrt{2}$"}
     ],
     "წესიერი მრავალკუთხედები" : [
-      { q: "$n$-კუთხედის შიდა კუთხეების ჯამი გამოითვლება ფორმულით:", a: "$180(n-2)$"},
+      { q: "$n$-კუთხედის შიდა კუთხეების ჯამი გამოითვლება ფორმულით:", 
+        a: "$180(n-2)$", 
+        help: "როცა მრავალკუთხედის გვერდების რაოდენობა იზრდება 1-ით, შიდა კუთხეების ჯამი იზრდება 180 გრადუსით.",             
+       tasks: [ { q: "რას უდრის ხუთკუთხედის შიდა კუთხეების ჯამი?", a: "540"},
+                 { q: "რას უდრის ექვსკუთხედის შიდა კუთხეების ჯამი?", a: "720"}
+               ]},
       { q: "წესიერი $n$-კუთხედის ერთი შიდა კუთხე გამოითვლება ფორმულით:" , a: "$\\frac{180(n-2)}{n}$"},
       { q: "წესიერი ხუთკუთხედის თითოეული შიდა კუთხის ზომაა", a: "$108^\\circ$"},
       { q: "რისი ტოლია წესიერ სამკუთხედში ჩახაზული წრეწირის რადიუსის სიგრძე", a: "$\\frac{a}{2\\sqrt{3}}$"},
@@ -166,14 +171,18 @@ const data = {
         { q: "რომელი ფუნქციის გრაფიკია გამოსახული სურათზე?", a: "$y=(x-2)^2$", func: "(x-2) ** 2"},
         { q: "რომელი ფუნქციის გრაფიკია გამოსახული სურათზე?", a: "$y=-x+3$", func: "-x+3"},
         { q: "რომელი ფუნქციის გრაფიკია გამოსახული სურათზე?", a: "$y=\\sqrt{x+2}$", func: "Math.sqrt(x+2)"},
-        { q: "რომელი ფუნქციის გრაფიკია გამოსახული სურათზე?", a: "$y=x$", func: "x"}
+        { q: "რომელი ფუნქციის გრაფიკია გამოსახული სურათზე?", a: "$y=x$", func: "x"},
+        { q: "რომელი ფუნქციის გრაფიკია გამოსახული სურათზე?", a: "$y=3x$", func: "3*x"},
+        { q: "რომელი ფუნქციის გრაფიკია გამოსახული სურათზე?", a: "$y=\\frac{1}{x^2}$", func: "1 /(x*x)"}
         
     ]
 };
+
 // 1. GLOBAL STATE
 let currentStack = [];
 let currentIndex = 0;
-let board = null; // Board must be tracked globally
+let board = null;
+let currentTaskIndex = 0;
 
 // 2. CORE UTILITIES
 function shuffleArray(array) {
@@ -186,27 +195,15 @@ function shuffleArray(array) {
 
 // 3. NAVIGATION FUNCTIONS
 function startStack(name) {
-    console.log("Starting category:", name);
-    
-    // Safety: Check if data exists
-    if (!data || !data[name]) {
-        console.error("Category not found in data object!");
-        return;
-    }
-
-    // Handle both formats: data[name] or data[name].cards
+    if (!data || !data[name]) return;
     const categorySource = data[name].cards ? data[name].cards : data[name];
     currentStack = [...categorySource];
-    
     shuffleArray(currentStack);
     currentIndex = 0;
-
     const titleEl = document.getElementById('category-title');
     if (titleEl) titleEl.innerText = name;
-
     document.getElementById('menu').style.display = 'none';
     document.getElementById('player').style.display = 'block';
-    
     updateCard();
 }
 
@@ -218,23 +215,21 @@ function updateCard() {
     const aEl = document.getElementById('a-text');
     const imgEl = document.getElementById('q-img'); 
     const graphEl = document.getElementById('jxgbox');
-
-    // 1. Reset card state
     const flashcard = document.querySelector('.flashcard');
+    const helpBtn = document.getElementById('help-btn');
+    const taskBtn = document.getElementById('task-btn');
+  
+    closeTask();
+    closeTheory();
+
     if (flashcard) {
         flashcard.classList.remove('flipped');
-        
-        // THE FIX: Assign the click behavior here
         flashcard.onclick = toggleFlip; 
-        
-        if (graphEl) graphEl.style.visibility = "visible"; 
     }
 
-    // 2. Set Text Content
     if (textEl) textEl.innerHTML = card.q || "";
     if (aEl) aEl.innerHTML = card.a || "";
 
-    // 3. Set Image Content
     if (imgEl) {
         if (card.img) {
             imgEl.src = card.img;
@@ -244,33 +239,42 @@ function updateCard() {
         }
     }
 
-    // 4. GRAPH LOGIC
+    if (helpBtn) {
+        if (card.help && card.help.trim() !== "") {
+            helpBtn.style.display = "inline-block";
+        } else {
+            helpBtn.style.display = "none";
+        }
+    }
+
+    // FIXED: Added the onclick assignment so the button actually works
+    if (taskBtn) {
+        if (card.tasks && Array.isArray(card.tasks) && card.tasks.length > 0) {
+            taskBtn.style.display = "inline-block";
+            taskBtn.onclick = openTask; 
+        } else {
+            taskBtn.style.display = "none";
+        }
+    }
+
     if (graphEl) {
         if (board) {
             JXG.JSXGraph.freeBoard(board);
             board = null; 
         }
-
         if (card.func && card.func.trim() !== "") {
             graphEl.style.display = "block";
-            graphEl.style.visibility = "visible"; // Force visibility for new graph
+            graphEl.style.visibility = "visible"; 
             graphEl.style.pointerEvents = "none"; 
-            
-            setTimeout(() => {
-                renderGraph(card.func);
-            }, 50);
+            setTimeout(() => { renderGraph(card.func); }, 50);
         } else {
             graphEl.style.display = "none";
         }
     }
 
-    // 5. Update Progress & Math
     const progressEl = document.getElementById('progress');
-    if (progressEl) {
-        progressEl.innerText = `${currentIndex + 1} / ${currentStack.length}`;
-    }
+    if (progressEl) progressEl.innerText = `${currentIndex + 1} / ${currentStack.length}`;
     
-    // Math rendering configuration (Includes $ for standard and \( \) for your ledger preference)
     if (typeof window.renderMathInElement === 'function') {
         renderMathInElement(document.getElementById('player'), {
             delimiters: [
@@ -283,38 +287,54 @@ function updateCard() {
     }
 }
 
+// 4. THEORY MODAL FUNCTIONS
+function openTheory(event) {
+    if (event) event.stopPropagation();
+    const card = currentStack[currentIndex];
+    const modal = document.getElementById('theory-modal');
+    const helpTextModal = document.getElementById('help-text-modal');
+
+    if (modal && helpTextModal && card.help) {
+        helpTextModal.innerHTML = card.help;
+        modal.style.display = "block";
+        if (typeof renderMathInElement === 'function') {
+            renderMathInElement(helpTextModal, {
+                delimiters: [
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false}
+                ]
+            });
+        }
+    }
+}
+
+function closeTheory() {
+    const modal = document.getElementById('theory-modal');
+    if (modal) modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    const tModal = document.getElementById('theory-modal');
+    const taskModal = document.getElementById('task-modal');
+    if (event.target == tModal) closeTheory();
+    if (event.target == taskModal) closeTask();
+};
+
+// 5. CORE GRAPHING & FLIPPING
 function renderGraph(functionString) {
-    // Ensure library is loaded
-    if (typeof JXG === 'undefined') {
-        console.error("JSXGraph library is missing.");
-        return;
-    }
-
-    // Double-check clearing (in case it bypassed updateCard somehow)
-    if (board) {
-        JXG.JSXGraph.freeBoard(board);
-        board = null;
-    }
-
+    if (typeof JXG === 'undefined') return;
+    if (board) { JXG.JSXGraph.freeBoard(board); board = null; }
     try {
-        // Initialize with specific settings
         board = JXG.JSXGraph.initBoard('jxgbox', {
             boundingbox: [-10, 10, 10, -10],
             axis: true,
             showCopyright: false,
             showNavigation: false,
-            keepaspectratio: true // Prevents stretched/warped graphs
+            keepaspectratio: true
         });
-
-        // Create the function with a safety wrapper
         board.create('functiongraph', [function(x) {
-            try {
-                return eval(functionString);
-            } catch(e) { 
-                return 0; // If math is wrong, draws a flat line at y=0 instead of crashing
-            }
+            try { return eval(functionString); } catch(e) { return 0; }
         }], { strokeWidth: 3, strokeColor: '#4a90e2' });
-
     } catch (err) {
         console.error("Board Initialization Failed:", err);
     }
@@ -331,32 +351,87 @@ function prevCard() {
 }
 
 function goHome() {
-    // CRITICAL: Destroy board and clear variable when returning to menu
-    if (board) {
-        JXG.JSXGraph.freeBoard(board);
-        board = null;
-    }
+    if (board) { JXG.JSXGraph.freeBoard(board); board = null; }
     document.getElementById('menu').style.display = 'grid';
     document.getElementById('player').style.display = 'none';
 } 
+
 function toggleFlip() {
     const flashcard = document.querySelector('.flashcard');
     const graphEl = document.getElementById('jxgbox');
-    
     if (!flashcard) return;
-
-    // Toggle the flipped class
     flashcard.classList.toggle('flipped');
-
-    // iPAD FIX: Hide the graph when the card is showing the back (answer)
     if (graphEl) {
         if (flashcard.classList.contains('flipped')) {
             graphEl.style.visibility = "hidden";
         } else {
-            // Show it again when flipped to the front (question)
             if (currentStack[currentIndex] && currentStack[currentIndex].func) {
                 graphEl.style.visibility = "visible";
             }
         }
+    }
+}
+
+// 6. TASK MODAL LOGIC
+function openTask(event) {
+    if (event) event.stopPropagation();
+    const card = currentStack[currentIndex];
+    if (!card.tasks || card.tasks.length === 0) return;
+    currentTaskIndex = 0; 
+    displayTask();
+    document.getElementById('task-modal').style.display = "block";
+}
+
+function displayTask() {
+    const card = currentStack[currentIndex];
+    const task = card.tasks[currentTaskIndex];
+    document.getElementById('task-text-modal').innerHTML = task.q;
+    document.getElementById('task-answer-text').innerHTML = "პასუხი: " + task.a;
+    document.getElementById('task-number').innerText = `${currentTaskIndex + 1} / ${card.tasks.length}`;
+    document.getElementById('task-answer-text').style.display = "none";
+    document.getElementById('show-task-answer-btn').innerText = "პასუხის ნახვა";
+    document.getElementById('task-nav-controls').style.visibility = (card.tasks.length > 1) ? "visible" : "hidden";
+
+    if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.getElementById('task-modal'), {
+            delimiters: [
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false}
+            ]
+        });
+    }
+}
+
+function changeTask(direction) {
+    const card = currentStack[currentIndex];
+    currentTaskIndex = (currentTaskIndex + direction + card.tasks.length) % card.tasks.length;
+    displayTask();
+}
+
+function closeTask() {
+    const modal = document.getElementById('task-modal');
+    if (modal) modal.style.display = "none";
+}
+
+// ADDED: The missing function that makes the button work
+function toggleTaskAnswer() {
+    const ansText = document.getElementById('task-answer-text');
+    const btn = document.getElementById('show-task-answer-btn');
+    
+    if (!ansText || !btn) return;
+
+    if (ansText.style.display === "none" || ansText.style.display === "") {
+        ansText.style.display = "block";
+        btn.innerText = "პასუხის დამალვა";
+        
+        // Re-render math in the answer in case it was hidden
+        if (typeof renderMathInElement === 'function') {
+            renderMathInElement(ansText, {
+                delimiters: [{left: '$', right: '$', display: false}]
+            });
+        }
+    } else {
+        ansText.style.display = "none";
+        btn.innerText = "პასუხის ნახვა";
     }
 }

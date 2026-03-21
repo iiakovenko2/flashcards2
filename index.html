@@ -9,67 +9,48 @@
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
     
-   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraph.css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jsxgraph/distrib/jsxgraphcore.js"></script>
     <link rel="stylesheet" href="style.css">
-    </head>
+</head>
 <body>
       
     <h1>მათემატიკის ბარათები</h1>
 
     <div id="menu" class="menu-container">
-        <div class="category-card" onclick="startStack('ტრიგონომეტრია')">
-            <h3>ტრიგონომეტრია</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('სამკუთხედის მსგავსება')">
-            <h3>სამკუთხედის მსგავსება</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('პითაგორას თეორემა')">
-            <h3>პითაგორას თეორემა</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('წესიერი მრავალკუთხედები')">
-            <h3>წესიერი მრავალკუთხედები</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('წრფივი ფუნქცია')">
-            <h3>წრფივი ფუნქცია</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('კვადრატული ფუნქცია')">
-            <h3>კვადრატული ფუნქცია</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('ფიგურათა ფართობები')">
-            <h3>ფიგურათა ფართობები</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('ვექტორები')">
-            <h3>ვექტორები</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('სტატისტიკა')">
-            <h3>სტატისტიკა</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('პროცენტი, ნაწილი, პროპორცია')">
-            <h3>პროცენტი, ნაწილი, პროპორცია</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('იცანი ფორმულა')">
-            <h3>იცანი ფორმულა</h3> 
-        </div>
-        <div class="category-card" onclick="startStack('გრაფიკები')">
-            <h3>გრაფიკები</h3> 
-        </div>
-        
+        <div class="category-card" onclick="startStack('ტრიგონომეტრია')"><h3>ტრიგონომეტრია</h3></div>
+        <div class="category-card" onclick="startStack('სამკუთხედის მსგავსება')"><h3>სამკუთხედის მსგავსება</h3></div>
+        <div class="category-card" onclick="startStack('პითაგორას თეორემა')"><h3>პითაგორას თეორემა</h3></div>
+        <div class="category-card" onclick="startStack('წესიერი მრავალკუთხედები')"><h3>წესიერი მრავალკუთხედები</h3></div>
+        <div class="category-card" onclick="startStack('წრფივი ფუნქცია')"><h3>წრფივი ფუნქცია</h3></div>
+        <div class="category-card" onclick="startStack('კვადრატული ფუნქცია')"><h3>კვადრატული ფუნქცია</h3></div>
+        <div class="category-card" onclick="startStack('ფიგურათა ფართობები')"><h3>ფიგურათა ფართობები</h3></div>
+        <div class="category-card" onclick="startStack('ვექტორები')"><h3>ვექტორები</h3></div>
+        <div class="category-card" onclick="startStack('სტატისტიკა')"><h3>სტატისტიკა</h3></div>
+        <div class="category-card" onclick="startStack('პროცენტი, ნაწილი, პროპორცია')"><h3>პროცენტი, ნაწილი, პროპორცია</h3></div>
+        <div class="category-card" onclick="startStack('იცანი ფორმულა')"><h3>იცანი ფორმულა</h3></div>
+        <div class="category-card" onclick="startStack('გრაფიკები')"><h3>გრაფიკები</h3></div>
     </div>
 
     <div id="player">
         <button class="back-btn" onclick="goHome()">← მთავარი მენიუ</button>
         <h2 id="category-title"></h2>
         
-        <div class="flashcard"> <div class="flashcard-inner">
-        <div class="front">
-            <div id="q-text-content"></div>
-            <img id="q-img" alt="Diagram">
-            <div id="jxgbox" class="jxgbox" style="width: 280px; height: 280px; margin: 10px auto; display: block; background: white;"></div>
+        <div style="text-align: center; margin-bottom: 10px;">
+            <button id="help-btn" class="theory-trigger" onclick="openTheory(event)" style="display:none;">💡 თეორიული ცნობა</button>
+            <button id="task-btn" class="task-trigger" onclick="openTask(event)" style="display:none;">📝 გამოცდის ამოცანა</button>
         </div>
-        <div class="back" id="a-text">პასუხი</div>
-    </div>
-</div>
+
+        <div class="flashcard"> 
+            <div class="flashcard-inner">
+                <div class="front">
+                    <div id="q-text-content"></div>
+                    <img id="q-img" alt="Diagram">
+                    <div id="jxgbox" class="jxgbox" style="width: 280px; height: 280px; margin: 10px auto; display: block; background: white;"></div>
+                </div>
+                <div class="back" id="a-text">პასუხი</div>
+            </div>
+        </div>
 
         <div class="controls">
             <button onclick="prevCard()">წინა</button>
@@ -77,6 +58,38 @@
             <button onclick="nextCard()">შემდეგი</button>
         </div>
     </div>
+
+    <div id="theory-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeTheory()">&times;</span>
+            <h3 style="margin-top:0;">თეორიული ცნობა</h3>
+            <hr>
+            <div id="help-text-modal"></div>
+        </div>
+    </div>
+  
+  <div id="task-modal" class="modal">
+    <div class="modal-content" style="border-top: 5px solid #27ae60;">
+        <span class="close-btn" onclick="closeTask()">&times;</span>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="margin:0; color: #27ae60;">📝 ამოცანა <span id="task-number">1/1</span></h3>
+        </div>
+        <hr>
+        
+        <div id="task-text-modal" style="min-height: 80px; margin-top: 15px;"></div>
+
+        <div id="task-answer-wrapper" style="margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px;">
+            <button id="show-task-answer-btn" onclick="toggleTaskAnswer()" class="ans-btn">პასუხის ნახვა</button>
+            <div id="task-answer-text" style="display:none; margin-top: 10px; font-weight: bold;"></div>
+        </div>
+
+        <div id="task-nav-controls" style="display: flex; justify-content: space-between; margin-top: 25px;">
+            <button onclick="changeTask(-1)" class="nav-btn">← წინა</button>
+            <button onclick="changeTask(1)" class="nav-btn">შემდეგი →</button>
+        </div>
+    </div>
+</div>
 
     <script src="script.js"></script>
 </body>
